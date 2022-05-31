@@ -1,56 +1,60 @@
-require('dotenv').config();
+require("dotenv").config();
 
-const express = require('express');
-const exphbs = require('express-handlebars');
-const fileUpload = require('express-fileupload');
+const express = require("express");
+const exphbs = require("express-handlebars");
+const fileUpload = require("express-fileupload");
 
 class Server {
+  constructor() {
+    this.app = express();
+    this.port = process.env.PORT || "8080";
 
-    constructor(){
-        this.app = express();
-        this.port = process.env.PORT || '8080';
+    this.setTemplateEngine();
 
-        this.setTemplateEngine();
+    this.middlewares();
 
-        this.middlewares();
+    this.routes();
+  }
 
-        this.routes();
- 
-    }
+  setTemplateEngine() {
+    this.app.set("view engine", "hbs");
 
-    setTemplateEngine(){
-        this.app.set('view engine','hbs');
+    this.app.engine(
+      "hbs",
+      exphbs({
+        extname: "hbs",
+        defaultLayout: "",
+        layoutsDir: "",
+      })
+    );
+  }
 
-        this.app.engine('hbs',exphbs({
-            extname:'hbs',
-            defaultLayout:'',
-            layoutsDir:''
-        }));
-    }
+  middlewares() {
+    this.app.use(express.static("public"));
+    this.app.use(express.json());
 
-    middlewares(){
-        this.app.use(express.static('public'));
-        this.app.use(express.json());
+    this.app.use(
+      fileUpload({
+        useTempFiles: true,
+        tempFileDir: "/tmp/",
+        debug: true,
+      })
+    );
+  }
 
-        this.app.use(fileUpload({
-            useTempFiles : true,
-            tempFileDir : '/tmp/',
-            debug:true
-        }));
-    }
+  routes() {
+    this.app.use("/index", require("../routes/index.routes"));
+    this.app.use("/upload", require("../routes/upload.routes"));
+    this.app.use("/download", require("../routes/download.routes"));
+    this.app.use("/getObjects", require("../routes/getObjects.routes"));
+    this.app.use("/uploadBucket", require("../routes/uploadBucket.routes"));
+  }
 
-    routes(){
-        this.app.use('/index',require('../routes/index.routes'))
-        this.app.use('/upload',require('../routes/upload.routes'))
-    }
-
-    listen(){
-        this.app.listen(this.port,()=>{
-            console.log('Listening on port',this.port);
-        });
-    }
-
-    
+  listen() {
+    this.app.listen(this.port, () => {
+      console.log("Listening on port", this.port);
+    });
+  }
 }
 
 module.exports = Server;

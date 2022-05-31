@@ -13,10 +13,22 @@
             <h5>Upload Files to S3</h5>
         </div>
         <div class="card-body">
+                <form>
+                <div class="form-group">
+                    <label for="text">Create New Bucket</label>
+                    <input type="text" name="new" id="new" class="form-control-file" />
+                </div>
+                <input type="submit" value="Create" id="create" class="btn btn-primary">
+                     {{#each alert}}
+                            <small>Result: {{this.alert}}</small>
+                        {{/each}}
+            </form>
+            <hr/>
             <form>
                 <div class="form-group">
                     <label for="buckets">Buckets</label>
                     <select name="buckets" id="buckets" class="form-control">
+                            <option value="" disabled selected>Selected a option</option>
                         {{#each buckets}}
                             <option value="{{this.Name}}">{{this.Name}}</option>
                         {{/each}}
@@ -27,6 +39,15 @@
                     <input type="file" name="file" id="file" class="form-control-file" />
                 </div>
                 <input type="submit" value="Upload" id="upload" class="btn btn-primary">
+            </form>
+            <hr />
+            <form>
+                <div class="form-group">
+                    <label for="contents">Objects</label>
+                    <select name="contents" id="contents" class="form-control">
+                            <option value="" selected disabled>Selected a option in Buckets</option>
+                    </select>
+                </div>
             </form>
             <hr />
             <table class="table table-bordered">
@@ -47,6 +68,9 @@
             </table>
         </div>
     </div>
-    <script src="js/upload.js"></script>
+    <script src="js/create.js"></script>
+    <script  src="js/upload.js"></script>
+    <script src="js/getObjects.js"></script>
+    <script src="js/download.js"></script>
 </body>
 </html>
